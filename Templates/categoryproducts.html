@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %} sort by category {% endblock %}
+
+
+
+{% block content %}
+
+<style>
+    body {
+        background-color: rgb(229, 224, 224);
+    }
+</style>
+
+<body>
+    <div class="container">
+        
+        <br>
+        <div class="dropdown text-center">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Category
+            </button>
+            
+            
+            {% if no %}
+            <h3>Category:{{category}}</h3>
+            <h5>({{no}} results)</h5>
+            {% endif %}
+
+            <div class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+                {% for category in categories %}
+                <a class="dropdown-item" href="{% url 'ecomapp:allproducts' category.id%}">{{category.title}}</a>
+                {% endfor %} 
+     
+            </div>
+          </div>
+
+
+       
+
+
+        <div class="d-flex justify-content-around  flex-wrap">
+            {% for product in products %}
+            <div class="card mt-5" style="width: 12rem;">
+                <h5 class="card-title text-center"><strong>{{product.title}}</strong></h5>
+                <img src="{{product.image.url}}" class="img-fluid"></img><br>
+                <hr>
+                <div class="card-body text-center">
+                    <p><a href="{% url 'ecomapp:productinfo' product.id %}">Know More</a></p>
+                    <p>Price:<strike>Rs.{{product.marked_price}}</strike>Rs.{{product.selling_price}}</p>
+
+
+                    <a class="btn btn-primary" href="{% url 'ecomapp:addtocart' product.id %}">Add To Cart</a>
+
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+     
+    </div>
+
+    <div class="text-center mt-5 ">
+        <span class="current text-center">
+          Page {{ prod_list.number }} of {{ prod_list.paginator.num_pages }}.
+      </span>
+        <div class="pagination  mx-auto mb-4" style="width: 200px;">
+          
+          {% if products.has_previous %}
+                  <li class="page-item"><a  class="page-link" href="?page=1"> first</a></li>
+                  <li class="page-item"><a  class="page-link" href="?page={{ products.previous_page_number }}">previous</a></li>
+              {% endif %}
+      
+              <span class="current ">
+                
+                <li class="page-item page-link bg-dark text-white">{{ products.number }}</a></li>
+              </span>
+      
+              {% if products.has_next %}
+              <li class="page-item"><a  class="page-link" href="?page={{ products.next_page_number }}">next</a></li>
+                  <li class="page-item"><a  class="page-link" href="?page={{ products.paginator.num_pages }}">last </a></li>
+                  {% endif %}
+          
+      </div>
+      
+      </div>
+
+
+</body>
+{% endblock %}

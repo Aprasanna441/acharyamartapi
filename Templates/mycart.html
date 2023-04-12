@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %} mycart {% endblock %}
+
+
+
+{% block content %}
+<style>
+    body{
+        background-color: rgb(220, 179, 231);
+    }
+</style>
+<body>
+
+{% if cart.total == 0 %}
+    <p class="text-center">No items in cart</p>
+    {% else %}
+    <p class="text-center">Items in the cart</p>
+    {% endif %}
+    <div class="container">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Product </th>
+      <th scope="col">Rate</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Total</th>
+      <th scope="col">Change Qty</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for cartproduct in cart.cartproduct_set.all %}
+    <tr>
+      
+      <td>{{forloop.counter}}</td>
+      <td>{{cartproduct.product.title}}</td>
+      <td>{{cartproduct.rate}}</td>
+      <td>{{cartproduct.quantity}}</td>
+      <td>{{cartproduct.subtotal}}</td>
+
+      <td><a class="btn btn-info" href="{% url 'ecomapp:plus'  cartproduct.id %}">+</a>
+        <a class="btn btn-danger" href="{% url 'ecomapp:minus' cartproduct.id %}">-</a>
+        <a class="btn btn-danger" href="{% url 'ecomapp:remove' cartproduct.id %}">X</a>
+    </td>
+      
+    </tr>
+    {% endfor %}
+    <tr colspan="3" class="text-center">
+        <td ><strong>Total:</strong>Rs.{{cart.total}}  Only</td>
+    </tr>
+
+  </tbody>
+</table>
+{% if cart.total == 0  %}
+{% else %}
+<a class="btn btn-primary" href="{% url 'ecomapp:checkout' %}"> Proceed to Place Order</a>
+
+{% endif %}
+    </div>
+</body>
+{% endblock %}

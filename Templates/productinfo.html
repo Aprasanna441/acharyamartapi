@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} -product-features {% endblock %}
+
+
+
+{% block content %}
+
+<style>
+    body {
+        background-color: rgb(229, 224, 224);
+    }
+</style>
+
+<body>
+<div class="container p-3 text-center">
+<img src="{{product.image.url}}" alt="" class="img-fluid">
+
+<a class="btn btn-primary" href="{% url 'ecomapp:addtocart' product.id %}">Add To Cart</a>
+<h1>{{product.title}}</h1><p>Total views:{{product.view_count}}</p>
+<a class=" btn btn-info" href="{% url 'ecomapp:home' %}">{{product.category}}</a><br>
+<strong>Selling Price:</strong>Rs.{{product.selling_price}}
+<strong> |||  Marked Price:</strong>Rs.{{product.marked_price}} <br>
+<strong>Warranty:</strong>{{product.warranty}} <strong> ||| Return Policy:</strong>{{product.return_policy}}
+<h2>{{product.description}}</h2>
+
+
+
+</div>
+
+       
+
+
+
+
+
+</body>
+{% endblock %}

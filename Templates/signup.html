@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %} Signup {% endblock %}
+
+
+
+{% block content %}
+<style>
+  body
+  {
+    background-color: rgb(168, 67, 67);
+  }
+  .errorList{
+    color:red;
+  }
+</style>
+<body>
+    <div class="containter pt-4 text-center ">
+        <div class="col-lg-5 shadow  mx-auto p-0 bg-light">
+          <div class="alert alert-success">
+            <h2>Create Account</h2><div class="form-check form-switch">
+              <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" checked>
+              <label class="btn btn-outline-danger" for="success-outlined" id="danger2"><a href="{% url 'ecomapp:login' %}">Login</a></label>
+              
+              <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off">
+              <label class="btn btn-outline-danger" id="danger2" for="danger-outlined"><a href="{% url 'ecomapp:signup' %}">Signup</a></label>
+            </div>
+          </div>
+          <div class="p-4">
+            <form method="post" id="login" >
+              
+              {% csrf_token %}
+              {{ form.as_p}}
+              <hr>
+              <input class="btn btn-outline-danger" type="submit" value="login">
+            </form>
+            <form method="post"  id="signup" style="display:none;">
+             
+  
+              {% csrf_token %}
+              {{ form.as_p }}
+              <hr>
+              <input class="btn btn-outline-danger"  type="submit" value="Create Account">
+            </form>
+            
+          </div>
+          
+       </div>
+        </div>
+      </div>
+</body>
+<script>
+    const login=document.querySelector("#login")
+    const signup=document.querySelector("#signup")
+    danger2=document.querySelector("#success-outlined")
+    danger1=document.querySelector("#danger-outlined")
+
+    danger2.onclick=()=>{
+    signup.style.display="none"
+    login.style.display="block"
+    }
+    danger1.onclick=()=>{
+    login.style.display="none"
+    signup.style.display="block"
+    }
+
+  
+    
+    
+
+  </script>
+{% endblock %}
