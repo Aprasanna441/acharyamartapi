@@ -547,5 +547,9 @@ class UserLoginSerializerView(APIView):
             else:
                 return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}},status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST,)
+    
+class UserRegistrationSerializerView(APIView):
+    def post(self,request):
+        pass
 
 
