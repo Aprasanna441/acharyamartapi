@@ -511,7 +511,7 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout,authenticate
 from  rest_framework import status
-from .serializers import LoginSerializer,UserRegistrationSerializer,ForgetPasswordSerializer
+from .serializers import LoginSerializer,UserRegistrationSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BasicAuthentication
 
@@ -559,27 +559,32 @@ class UserLoginSerializerView(APIView):
 class UserRegistrationSerializerView(APIView):
     def post(self, request):
         serializer =UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            # Create a new user object
-            user = CustomUser(
-                email=serializer.validated_data['email'],
-               
-            )
-            user.set_password(serializer.validated_data['password'])
-            user.save()
-
-            # Create a new customer object
-            customer = Customer(
-                user=user,
-                full_name=serializer.validated_data['full_name'],
-                address=serializer.validated_data['address'],
+        if serializer.is_valid(raise_exception=True):
+            temp=CustomUser.objects.filter(email=serializer.validated_data['email'])
+            if temp is not None:
+                return Response({'message':"User already registered"},status=status.HTTP_400_BAD_REQUEST)
+            else:           # Create a new user object
+            
+                user = CustomUser(
+                    email=serializer.validated_data['email'],
                 
-            )
-            customer.save()
+                )
+                user.set_password(serializer.validated_data['password'])
+                user.save()
+
+                # Create a new customer object
+                customer = Customer(
+                    user=user,
+                    full_name=serializer.validated_data['full_name'],
+                    address=serializer.validated_data['address'],
+                    
+                )
+                customer.save()
             
 
             # Return success response
-            return Response({'message': 'Customer signed up successfully.'}, status=status.HTTP_201_CREATED)
-        else:
-            # Return error response with validation errors
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': 'Customer signed up successfully.'}, status=status.HTTP_201_CREATED)
+                    # Return error response with validation errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
