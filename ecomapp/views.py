@@ -583,3 +583,32 @@ class UserRegistrationSerializerView(APIView):
         else:
             # Return error response with validation errors
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ForgetPasswordSerializerView(APIView):
+    def post(self,request):
+        serializer=ForgetPasswordSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            email=serializer.validated_data['email']
+            user=CustomUser.objects.get(email=email)
+        
+            
+            uid=urlsafe_base64_encode(force_bytes(user.id))
+            token=PasswordResetTokenGenerator().make_token(user)
+            link='http://localhost:8000/resetpassword/'+uid+'/'+token+"/"
+            body="Click the link to reset your password"
+            data={
+                    'subject':'Reset your password' ,
+                    'body' :link,
+                    'to_email':email
+                    
+                }
+            Util.send_mail(data)
+            return Response({'message': 'Link sent to email.'}, status=status.HTTP_201_CREATED)
+        else:
+            # Return error response with validation errors
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
