@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser,Customer
+from django.contrib.auth import authenticate
 
 class LoginSerializer(serializers.ModelSerializer):
     email=serializers.EmailField(max_length=255)
@@ -43,5 +44,34 @@ class ForgetPasswordSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError("Email not rgegsiter")
 
+
+
+
+
+class UserChangePasswordSerializer(serializers.Serializer):
+    oldpassword=serializers.CharField(max_length=255,style={'input_type':'password'},write_only=True)
+    password=serializers.CharField(max_length=255,style={'input_type':'password'},write_only=True)
+    password2=serializers.CharField(max_length=255,style={'input_type':'password'},write_only=True)
     
+    class Meta:
+        fields=['oldpassword','password','password2']
+        model=CustomUser
+
+    def validate(self, attrs):
+        user=self.context.get('user')
+        print(user,"usar")
+        password=attrs.get('password')
+        oldpassword=attrs.get('oldpassword')
+        password2=attrs.get('password2')
+        user=authenticate(email=user,password=oldpassword)
+        # print(user)
+        if password!=password2:
+            raise serializers.ValidationError("Password and confirm password didnt match")
+        elif user is not None :        
+            user.set_password(password)
+            user.save()
+        else:
+            return serializers.ValidationError("User doesnt exist")
+        return  attrs
+           
         

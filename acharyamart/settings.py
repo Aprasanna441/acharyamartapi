@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'ecomapp', #for products,cart and so con
     
 ]
@@ -111,7 +112,8 @@ AUTH_USER_MODEL="ecomapp.CustomUser"
 
 REST_FRAMEWORK={
     'DEFAULT_AUTHENTICATION_CLASSES':[
-    'rest_framework.authentication.TokenAuthentication'
+    'rest_framework.authentication.TokenAuthentication',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 
