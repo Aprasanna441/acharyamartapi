@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Customer
+from .models import CustomUser,Customer,Product,Cart,CartProduct
 from django.contrib.auth import authenticate
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -74,4 +74,13 @@ class UserChangePasswordSerializer(serializers.Serializer):
             return serializers.ValidationError("User doesnt exist")
         return  attrs
            
-        
+
+class AllProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Product
+        fields='__all__'
+
+class CategoricalProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Product
+        fields='__all__'

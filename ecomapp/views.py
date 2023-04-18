@@ -512,6 +512,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout,authenticate
 from  rest_framework import status
 from .serializers import LoginSerializer,UserRegistrationSerializer,ForgetPasswordSerializer,UserChangePasswordSerializer
+from .serializers import AllProductsSerializer,CategoricalProductsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BasicAuthentication
 
@@ -618,5 +619,20 @@ class ChangePasswordSerializerView(APIView):
                return Response({'msg':"Password change success"},status=status.HTTP_200_OK)
           return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+class ListProductSerializerView(APIView):
+    def get(self,request,format=None):
+        dataa=Product.objects.all()
+        serializer=AllProductsSerializer(dataa,many=True)
+        return Response(serializer.data)
+    
+class CategoricalListProductSerializerView(APIView):
+    def get(self,request,format=None):
+        search = self.request.query_params.get('category') 
+        
+        if search:
+            dataa=Product.objects.filter(category__title__icontains=search)
+            serializer=CategoricalProductsSerializer(dataa,many=True)
+        return Response(serializer.data)
+        
 
 
