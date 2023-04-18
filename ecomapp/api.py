@@ -1,7 +1,7 @@
 from ecomapp import views
 from django.urls import path
 from ecomapp.views import UserLoginSerializerView,UserRegistrationSerializerView,ForgetPasswordSerializerView,ChangePasswordSerializerView
-from ecomapp.views import ListProductSerializerView,CategoricalListProductSerializerView
+from ecomapp.views import ListProductSerializerView,CategoricalListProductSerializerView,AddProductSerializerView
 from django.urls import path
 
 urlpatterns = [
@@ -10,7 +10,9 @@ urlpatterns = [
     path('forget-password/',ForgetPasswordSerializerView.as_view(),name="forgetpassword"),
     path('change-password/',ChangePasswordSerializerView.as_view(),name="chagepw"),
     path('list-products/',ListProductSerializerView.as_view(),name="listproducts"),
-    path('category-products/',CategoricalListProductSerializerView.as_view(),name="cat-prod-view")
+    path('category-products/',CategoricalListProductSerializerView.as_view(),name="cat-prod-view"),
+    path('add-products/',AddProductSerializerView.as_view(),name="add-prod"),
+
 
 
 
@@ -24,3 +26,9 @@ urlpatterns = [
 ]
 
 
+
+
+# {
+#     "email":"urllg@gmail.com",
+#     "password":"Hello@123"
+# }

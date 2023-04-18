@@ -84,3 +84,8 @@ class CategoricalProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Product
         fields='__all__'
+
+class AddProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields='__all__'
+        model=Product

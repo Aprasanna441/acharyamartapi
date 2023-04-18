@@ -512,8 +512,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout,authenticate
 from  rest_framework import status
 from .serializers import LoginSerializer,UserRegistrationSerializer,ForgetPasswordSerializer,UserChangePasswordSerializer
-from .serializers import AllProductsSerializer,CategoricalProductsSerializer
-from rest_framework.permissions import IsAuthenticated
+from .serializers import AllProductsSerializer,CategoricalProductsSerializer,AddProductsSerializer
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.authentication import BasicAuthentication
 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -633,6 +633,18 @@ class CategoricalListProductSerializerView(APIView):
             dataa=Product.objects.filter(category__title__icontains=search)
             serializer=CategoricalProductsSerializer(dataa,many=True)
         return Response(serializer.data)
+    
+class AddProductSerializerView(APIView):
+    serialier_class=AddProductsSerializer
+    permission_classes=[IsAdminUser]
+    def post(self,request,format=None):
+        serializer=self.serialier_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            product=serializer.save()
+            return Response({'message':"Data saved successfully"},status=status.HTTP_201_CREATED)
+        return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
+
+
         
 
 
