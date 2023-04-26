@@ -182,7 +182,7 @@ class CartView(EcomMixin,TemplateView):
         if cart_id:
             cart=Cart.objects.get(id=cart_id)
         else:
-            cart=None 
+            cart=None  
 
         context["cart"]=cart
          
@@ -512,7 +512,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login,logout,authenticate
 from  rest_framework import status
 from .serializers import LoginSerializer,UserRegistrationSerializer,ForgetPasswordSerializer,UserChangePasswordSerializer
-from .serializers import AllProductsSerializer,CategoricalProductsSerializer,AddProductsSerializer
+from .serializers import AllProductsSerializer,CategoricalProductsSerializer,AddProductsSerializer,AddToCartSerializer
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.authentication import BasicAuthentication
 
@@ -646,5 +646,37 @@ class AddProductSerializerView(APIView):
 
 
         
+
+class AddToCartSerializerView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self,request,format=None):
+        serializer=AddToCartSerializer(data=request.data,context={'user':request.user})
+        if serializer.is_valid(raise_exception=True):
+            product_id=serializer.validated_data['product_id']
+            customer=serializer.validated_data['customer']
+            id=CustomUser.objects.get(email=customer).id
+            customer=Customer.objects.get(user=id)
+            cart_id=Cart.objects.filter(customer__id=id)
+            product=Product.objects.get(id=product_id)
+            if cart_id:
+                print("Yes exist")
+            else:
+                cart_obj=Cart.objects.create(total=0,customer=customer)
+                cartproduct=CartProduct.objects.create(cart=cart_obj,product=product,rate=product.selling_price,quantity=1,subtotal=product.selling_price)
+                cart_obj.total+=product.selling_price
+                cart_obj.save()
+
+                
+            
+            
+            
+            
+            
+            
+            return Response("Data saved",status=status.HTTP_200_OK)
+
+            
+        return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
 
 

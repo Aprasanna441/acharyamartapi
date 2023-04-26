@@ -89,3 +89,11 @@ class AddProductsSerializer(serializers.ModelSerializer):
     class Meta:
         fields='__all__'
         model=Product
+
+
+class AddToCartSerializer(serializers.ModelSerializer):
+    customer=serializers.CharField()
+    product_id=serializers.IntegerField()
+    class Meta:
+        model=Cart
+        fields=['customer','product_id']

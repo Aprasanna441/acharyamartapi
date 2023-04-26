@@ -155,3 +155,10 @@ EMAIL_PORT=587
 EMAIL_HOST_USER=env('EMAIL_USER')
 EMAIL_HOST_PASSWORD=env('EMAIL_PASS')
 EMAIL_USE_TLS=True
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=55),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+   
+}
