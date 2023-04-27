@@ -654,14 +654,44 @@ class AddToCartSerializerView(APIView):
         serializer=AddToCartSerializer(data=request.data,context={'user':request.user})
         if serializer.is_valid(raise_exception=True):
             product_id=serializer.validated_data['product_id']
-            customer=serializer.validated_data['customer']
-            id=CustomUser.objects.get(email=customer).id
-            customer=Customer.objects.get(user=id)
-            cart_id=Cart.objects.filter(customer__id=id)
+            customerr=serializer.validated_data['customer']
+            id=CustomUser.objects.get(email=customerr).id
+            
+            customer_id=Customer.objects.get(user__id=id).id
+            customer=Customer.objects.get(user__id=id)
+                       
+            cart_id=Cart.objects.get(customer__id=customer_id).id
+            
+
             product=Product.objects.get(id=product_id)
+
+
+            # checking if the user already has a cart
+            
             if cart_id:
-                print("Yes exist")
+                cart_obj=Cart.objects.get(id=cart_id)
+                print("Yes exist garxa")
+                # checking if the product already exists()
+                check=cart_obj.cartproduct_set.filter(product=product)
+                if check.exists():
+                    print("Yes product cart maa xa")
+                    cartproduct=check.first()
+                    cartproduct.quantity+=1
+                    cartproduct.subtotal+=product.selling_price
+                    cartproduct.save()
+                    cart_obj.total+=product.selling_price 
+                    cart_obj.save()
+                else:
+                    print("cart ma xaina")
+                    cartproduct=CartProduct.objects.create(cart=cart_obj,product=product,rate=product.selling_price,quantity=1,subtotal=product.selling_price)
+                    cart_obj.total+=product.selling_price
+                    cart_obj.save()
+
+
+
+            #  if no cart exist,create one   
             else:
+                print("naya banayeko cart")
                 cart_obj=Cart.objects.create(total=0,customer=customer)
                 cartproduct=CartProduct.objects.create(cart=cart_obj,product=product,rate=product.selling_price,quantity=1,subtotal=product.selling_price)
                 cart_obj.total+=product.selling_price
