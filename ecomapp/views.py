@@ -513,6 +513,7 @@ from django.contrib.auth import login,logout,authenticate
 from  rest_framework import status
 from .serializers import LoginSerializer,UserRegistrationSerializer,ForgetPasswordSerializer,UserChangePasswordSerializer
 from .serializers import AllProductsSerializer,CategoricalProductsSerializer,AddProductsSerializer,AddToCartSerializer
+from .serializers import MyCartSerializer
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.authentication import BasicAuthentication
 
@@ -709,4 +710,27 @@ class AddToCartSerializerView(APIView):
             
         return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
 
+
+class MyCartView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self,request,format=None):
+
+        
+        email=request.user
+        print(email)
+        id=CustomUser.objects.get(email=email).id            
+        customer_id=Customer.objects.get(user__id=id).id            
+        dataa=Cart.objects.get(customer__id=customer_id)
+        
+
+        serializer=MyCartSerializer(dataa)
+        
+             
+        
+            
+            
+        return Response(serializer.data)
+    
+        
 
