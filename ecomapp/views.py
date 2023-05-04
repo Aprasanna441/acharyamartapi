@@ -513,7 +513,7 @@ from django.contrib.auth import login,logout,authenticate
 from  rest_framework import status
 from .serializers import LoginSerializer,UserRegistrationSerializer,ForgetPasswordSerializer,UserChangePasswordSerializer
 from .serializers import AllProductsSerializer,CategoricalProductsSerializer,AddProductsSerializer,AddToCartSerializer
-from .serializers import MyCartSerializer
+from .serializers import MyCartSerializer,CheckoutSerializer
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.authentication import BasicAuthentication
 
@@ -731,6 +731,48 @@ class MyCartView(APIView):
             
             
         return Response(serializer.data)
+
+
+class CheckOutSerializerView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self,request,format=None):
+        serializer=CheckoutSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            order_by=serializer.validated_data['order_by']
+            shipping_address=serializer.validated_data['shipping_address']
+            mobile=serializer.validated_data['mobile']
+            payment_method=serializer.validated_data['payment_method']
+            
+            dropping_email=customerr=serializer.validated_data['email']
+            email=request.user
+            id=CustomUser.objects.get(email=email).id            
+            customer_id=Customer.objects.get(user__id=id).id            
+            cart=Cart.objects.get(customer__id=customer_id)
+            order=Order(
+                    cart=cart,
+                    order_by=order_by,
+                    shipping_address=shipping_address,
+                    mobile=mobile,
+                    email=email,
+                    subtotal=cart.total,
+                    discount=0,
+                    total=cart.total,
+                    order_status="Order Received",
+                    
+                    payment_method=payment_method
+                    
+            )
+            order.save()
+            return Response("Data saved",status=status.HTTP_200_OK)
+        return Response(serializer.error,status=status.HTTP_400_BAD_REQUEST)
+
+
+        
+
+        
+
+
     
         
 

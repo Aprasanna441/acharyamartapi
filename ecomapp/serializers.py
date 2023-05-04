@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Customer,Product,Cart,CartProduct
+from .models import CustomUser,Customer,Product,Cart,CartProduct,Order
 from django.contrib.auth import authenticate
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -104,3 +104,8 @@ class MyCartSerializer(serializers.ModelSerializer):
         model=Cart
         fields="__all__"
     
+
+class CheckoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Order
+        fields=['order_by','shipping_address','mobile','email','payment_method']
